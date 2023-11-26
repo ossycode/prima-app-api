@@ -1,8 +1,12 @@
 """
 Test for models
 """
+import os, django
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings")
+django.setup()
 
 
 class ModelTests(TestCase):
