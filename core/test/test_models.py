@@ -30,11 +30,11 @@ class ModelTests(TestCase):
     def test_new_user_email_normalized(self):
         """Test email is normalized for new users."""
         sample_emails = [
-            ['test1@EXAMPLE.com', 'test1@example.com'],
-            ['Test2@Example.com', 'Test2@example.com']
-            ['TEST3@EXAMPLE.COM', 'TEST3@example.com']
-            ['test4@example.COM', 'test4@example.com']
+            ['test1@EXAMPLE.com', 'test1@example.com', 'testuser1'],
+            ['Test2@Example.com', 'Test2@example.com', 'testuser2'],
+            ['TEST3@EXAMPLE.COM', 'TEST3@example.com', 'testuser3'],
+            ['test4@example.COM', 'test4@example.com', 'testuser4'],
         ]
-        for email, expected in sample_emails:
-            user = get_user_model().objects.create_user(email, 'sample1234')
-            self.assertEqual(user.email, expected)
+        for email, expected_email, username in sample_emails:
+            user = get_user_model().objects.create_user(email, username, 'pass123')
+            self.assertEqual(user.email, expected_email)
