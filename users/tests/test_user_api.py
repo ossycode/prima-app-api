@@ -15,8 +15,7 @@ from rest_framework import status
 
 
 
-CREATE_USER_URL = reverse('users:create')
-USERID_URL = reverse('users:user_id')
+CREATE_USER_URL = reverse('users:users')
 
 def create_user(**params):
     """Create and return a new user"""
@@ -32,7 +31,7 @@ class PostUserApiTests(TestCase):
         """Test creating a user is successful."""
         payload = {
             'email': 'test6@example.com',
-            'username': 'testUser',
+            'username': 'testUser8',
             'password': 'testpass123',
             'name': 'Test Name'
         }
@@ -47,7 +46,7 @@ class PostUserApiTests(TestCase):
         """Test error returned if user with email or username exisit"""
         payload =  {
             'email': 'test@example.com',
-            'username': 'testUser',
+            'username': 'testUser7',
             'password': 'testpass123',
             'name': 'Test Name'
         }
@@ -77,18 +76,20 @@ class GetSingleUserApiTests(TestCase):
     def setUp(self):
         self.user = create_user(
             email='test@example.com',
-            username='testUser',
+            username='testUser2',
             password='testpass123',
             name='Test Name'
         )
         self.client = APIClient()
+        self.manage_user_url = reverse('users:user-detail', args=[self.user.id])
 
     def test_retrive_user_success(self):
         """Test retriving a single data by Id"""
-        res = self.client.get(USERID_URL)
+        res = self.client.get(self.manage_user_url )
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, {
+            'id': self.user.id,
             'name': self.user.name,
             'email': self.user.email,
             'username': self.user.username,
@@ -96,6 +97,6 @@ class GetSingleUserApiTests(TestCase):
     
     def test_post_userid_not_allowed(self):
         """Test POST is not allowed for the user_id endpoint"""
-        res = self.client.post(USERID_URL, {})
+        res = self.client.post(self.manage_user_url , {})
 
         self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
