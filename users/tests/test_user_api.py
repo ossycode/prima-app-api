@@ -16,12 +16,13 @@ from rest_framework import status
 
 
 CREATE_USER_URL = reverse('users:create')
+USERID_URL = reverse('users:user_id')
 
 def create_user(**params):
     """Create and return a new user"""
     return get_user_model().objects.create_user(**params)
 
-class PublicUserApiTests(TestCase):
+class PostUserApiTests(TestCase):
     """Test the public features of the user API."""
 
     def setUp(self):
@@ -71,4 +72,30 @@ class PublicUserApiTests(TestCase):
         ).exists()
         self.assertFalse(user_exists)
 
+class GetSingleUserApiTests(TestCase):
+    """Test API requests for retriving single user."""
+    def setUp(self):
+        self.user = create_user(
+            email='test@example.com',
+            username='testUser',
+            password='testpass123',
+            name='Test Name'
+        )
+        self.client = APIClient()
 
+    def test_retrive_user_success(self):
+        """Test retriving a single data by Id"""
+        res = self.client.get(USERID_URL)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, {
+            'name': self.user.name,
+            'email': self.user.email,
+            'username': self.user.username,
+        })
+    
+    def test_post_userid_not_allowed(self):
+        """Test POST is not allowed for the user_id endpoint"""
+        res = self.client.post(USERID_URL, {})
+
+        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
