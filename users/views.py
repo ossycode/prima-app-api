@@ -1,7 +1,7 @@
 """
 Views for the user API.
 """
-from core.models import User
+from django.contrib.auth import get_user_model
 from users.serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -10,7 +10,7 @@ from rest_framework import generics
 
 class CreateUserView(generics.ListCreateAPIView):
     """Create a new user in the system or retrieve all users."""
-    queryset = User.objects.all()
+    queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
 
     def post(self, request, *args, **kwargs):
@@ -48,7 +48,7 @@ class ManageUserView(generics.RetrieveUpdateDestroyAPIView):
     API Endpoint for managing a single user.
     ...
     """
-     queryset = User.objects.all()
+     queryset = get_user_model().objects.all()
      serializer_class = UserSerializer
 
      def get(self, request, *args, **kwargs):
