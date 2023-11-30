@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-app
+  labels:
+    app: django-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django-app
+  template:
+    metadata:
+      labels:
+        app: django-app
+    spec:
+      volumes:
+        - name: django-app-data
+          persistentVolumeClaim:
+            claimName: django-app-pvc
+      containers:
+        - name: django-app
+          image: django-app:latest
+          imagePullPolicy: Never
+          volumeMounts:
+            - name: django-app-data
+              mountPath: /vol/web
+          env:
+            - name: DB_HOST
+              value: django-postgres
+            - name: DB_NAME
+              value: djangodb
+            - name: DB_USER
+              value: djangouser
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-password
+                  key: password
+          ports:
+            - containerPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    app: django-postgres
+spec:
+  selector:
+    matchLabels:
+      app: django
+      tier: postgres
+  template:
+    metadata:
+      labels:
+        app: django
+        tier: postgres
+    spec:
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: django-postgres-pvc
+      containers:
+        - image: postgres:15.2
+          name: postgres
+          ports:
+            - containerPort: 5432
+              name: postgres
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+          env:
+            - name: POSTGRES_DB
+              value: djangodb
+            - name: POSTGRES_USER
+              value: djangouser
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-password
+                  key: password
