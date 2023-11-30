@@ -50,9 +50,9 @@ jobs:
 
       - name: Apply Kubernetes manifests
         run: |
-          kubectl apply -f infra/ks8/storage.yaml
-          kubectl apply -f infra/ks8/deployment.yaml
-          kubectl apply -f infra/ks8/storage.yaml
+          kubectl apply -f infra/k8s/storage.yaml
+          kubectl apply -f infra/k8s/deployment.yaml
+          kubectl apply -f infra/k8s/services.yaml
 
       - name: Test service URLs
         run: |
