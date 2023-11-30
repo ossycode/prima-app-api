@@ -53,7 +53,7 @@ Ensure that you have Docker and Docker Compose installed on your development mac
 
 Follow the instructions based on your operating system to install Docker: [Install Docker](https://docs.docker.com/get-docker/)
 
-Docker Compose is included with Docker Desktop. For Linux or separate installation : [Install Docker Compose](https://docs.docker.com/compose/install/)
+Docker Compose is included with Docker Desktop. For separate installation : [Install Docker Compose](https://docs.docker.com/compose/install/)
 
 3. Build the Docker Image and Start the Docker Containers:
 
