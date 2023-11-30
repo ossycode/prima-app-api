@@ -72,3 +72,63 @@ Docker Compose is included with Docker Desktop. For separate installation : [Ins
 5. Stopping the containers
 
    Run `docker-compose down` # To stop the containers
+
+# Deployment Using Kubernetes (Minikube)
+
+1. Benefits of Kubernetes for deployment.
+
+The usage of Kubernetes for deployment offers multiple benefits across scaling and management of our application. Some of these benefits are:
+
+- Kubernetes automates deployments, reducing errors that may arise from manual management.
+- Containerization limits the impact of application failures on the entire system.
+- Labels, annotations, health checks, and features like Horizontal Pod Autoscaling enhance application performance, manageability, and responsiveness to varying demands.
+- Automation via Kubernetes reduces time and labour costs linked with manual deployment tasks.
+- It supports the use of cloud-based services and container-based applications, which are more efficient and scalable.
+  Kubernetes facilitates increased efficiency and productivity
+
+2. Install Minikube
+   Ensure that you have Docker and Docker Compose installed on your development machine.
+
+Follow the instructions on the minikube official website to install Minikube. [Install Minikube](https://minikube.sigs.k8s.io/docs/start/)
+
+Open a terminal and run the command `minikube start ` # to start minikube.
+
+3. Build and load the Image locally
+
+From the terminal, run the command `docker buildx build --no-cache  -t django-app:latest .` # This will build the docker image locally. Ensure the docker daemon is running
+
+To load the image to minikube run this command `minikube image load django-app:latest `
+
+4. Deploy Ap to Minikube
+
+cd to the infra/k8s/ directory
+
+Run these commands to deploy the manefests
+`kubectl apply -f deployment.yaml
+`
+`kubectl apply -f services.yaml`
+`kubectl apply -f storage.yaml`
+
+To confirm the pod is running, run this commands `kubectl get pods` and `kubectl get services`.
+
+5. Access the API Server
+
+Ways you can access the API server:
+
+- Run the command `minikube service <SERVICE_NAME>  --url` which will give you direct url to access application and access the url in web browser.
+
+- If you are using a driver to run minikube, accessing the provided url from step one might not work. A way to get it working is to use port-forwarding.
+
+  Run the command `kubectl port-forward <SERVICE_NAME> 8000:8000` and access the API server application on localhost:8000
+
+Note: <SERVICE_NAME> is the name of the service. In this case it will be django-api-srvc
+
+6. Clean up:
+
+To delete the Kubernetes resources to free up resources and avoid conflicts:
+
+- Run the command kubectl delete -f deployment.yaml # To delete the deployment
+
+- Run the command kubectl delete -f services.yaml # To delete the services
+
+- Run the command kubectl delete -f storage.yaml # To delete the storage
