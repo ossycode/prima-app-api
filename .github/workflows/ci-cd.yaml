@@ -15,7 +15,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.9"
 
       - name: Install dependencies
         run: |
@@ -32,11 +32,10 @@ jobs:
       - name: Set up Minikube
         uses: medyagh/setup-minikube@master
 
-      - name: Load Docker image into Minikube
+      - name: Build Docker image
         run: |
           eval $(minikube -p minikube docker-env)
           docker build -t django-app:latest .
-          docker save django-app:latest | (eval $(minikube docker-env --shell bash) && docker load)
 
   deployment:
     runs-on: ubuntu-latest
@@ -57,3 +56,4 @@ jobs:
       - name: Test service URLs
         run: |
           kubectl get services
+          minikube service list
