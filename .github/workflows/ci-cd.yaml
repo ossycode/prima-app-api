@@ -10,10 +10,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         with:
           python-version: "3.9"
 
@@ -27,14 +27,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Minikube
-        uses: medyagh/setup-minikube@master
+        uses: actions/checkout@v2
 
       - name: Build Docker image
         run: |
-          eval $(minikube -p minikube docker-env)
           docker build -t django-app:latest .
 
   deployment:
@@ -42,18 +38,18 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Set up Minikube
         uses: medyagh/setup-minikube@master
+
+      - name: Load Docker image into Minikube
+        run: |
+          eval $(minikube -p minikube docker-env)
+          docker save django-app:latest | (eval $(minikube docker-env --shell bash) && docker load)
 
       - name: Apply Kubernetes manifests
         run: |
           kubectl apply -f infra/k8s/storage.yaml
           kubectl apply -f infra/k8s/deployment.yaml
           kubectl apply -f infra/k8s/services.yaml
-
-      - name: Test service URLs
-        run: |
-          kubectl get services
-          minikube service list
