@@ -29,7 +29,6 @@ jobs:
     steps:
       - name: Build Docker image
         run: |
-          eval $(minikube -p minikube docker-env)
           docker build -f ./Dockerfile -t django-app:latest .
           docker images
           minikube image load django-app:latest
