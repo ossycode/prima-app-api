@@ -132,3 +132,5 @@ To delete the Kubernetes resources to free up resources and avoid conflicts:
 - Run the command kubectl delete -f services.yaml # To delete the services
 
 - Run the command kubectl delete -f storage.yaml # To delete the storage
+
+# CI/CD Pipeline Setup with GitHub Actions
