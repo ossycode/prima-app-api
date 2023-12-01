@@ -56,7 +56,5 @@ jobs:
 
       - name: Test service URLs
         run: |
-          minikube service list --namespace='default'
-          minikube service -n django-app --url
-          kubectl port-forward django-app 8000:8000
+          kubectl port-forward service/django-app 8000:8000 -n default
           echo "Done------------------------------------------"
