@@ -37,7 +37,7 @@ jobs:
         run: |
           export SHELL=/bin/bash
           eval $(minikube -p minikube docker-env)
-          docker build -f deploy/Dockerfile -t django-app:latest .
+          docker build -f ./deploy/Dockerfile -t django-app:latest .
           docker images
           minikube image load django-app:latest
 
