@@ -10,10 +10,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.9"
 
@@ -30,16 +30,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Minikube
-        uses: medyagh/setup-minikube@master
-
       - name: Build Docker image
         run: |
-          export SHELL=/bin/bash
-          eval $(minikube -p minikube docker-env)
           docker build -f ./Dockerfile.dev -t django-app:latest .
           docker images
-          minikube image load django-app:latest
 
   deployment:
     runs-on: ubuntu-latest
@@ -50,7 +44,30 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Minikube
-        uses: medyagh/setup-minikube@master
+        run: |
+
+      - name: Install Minikube
+        run: |
+          curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+          chmod +x minikube
+          sudo mv minikube /usr/local/bin/
+
+      - name: Start Minikube
+        run: |
+          minikube start
+
+      - name: Check Minikube Status
+        run: |
+          minikube status
+
+      - name: Set Docker Environment
+        run: |
+          eval $(minikube -p minikube docker-env)
+
+      - name: Load Docker image into Minikube
+        run: |
+          eval $(minikube -p minikube docker-env)
+          docker save django-app:latest | (eval $(minikube docker-env --shell bash) && docker load)
 
       - name: Apply Kubernetes manifests
         run: |
