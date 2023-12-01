@@ -34,10 +34,9 @@ jobs:
 
       - name: Load Docker image into Minikube
         run: |
-          export SHELL=/bin/bash
           eval $(minikube -p minikube docker-env)
-          docker buildx build -t django-app .
-          minikube image load django-app
+          docker build -t django-app:latest .
+          docker save django-app:latest | (eval $(minikube docker-env --shell bash) && docker load)
 
   deployment:
     runs-on: ubuntu-latest
