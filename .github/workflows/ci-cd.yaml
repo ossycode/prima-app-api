@@ -56,6 +56,5 @@ jobs:
 
       - name: Test service URLs
         run: |
-          kubectl get services
-          kubectl get pods
+          kubectl port-forward service/django-api-srvc 8000:8000 -n default
           echo "Done------------------------------------------"
