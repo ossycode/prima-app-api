@@ -31,7 +31,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker buildx build -t django-app:latest /deploy
+          docker buildx build -t django-app:latest ./deploy
 
   deployment:
     runs-on: ubuntu-latest
