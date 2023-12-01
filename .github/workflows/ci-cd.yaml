@@ -33,7 +33,6 @@ jobs:
       - name: Install Minikube
         run: |
           curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
-          minikube version
           minikube start
           minikube status
 
@@ -49,9 +48,11 @@ jobs:
     needs: dockerize
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Apply Kubernetes manifests
         run: |
-          eval $(minikube -p minikube docker-env) 
           kubectl apply -f infra/k8s/storage.yaml
           kubectl apply -f infra/k8s/deployment.yaml
           kubectl apply -f infra/k8s/services.yaml
