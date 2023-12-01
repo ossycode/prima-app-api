@@ -34,8 +34,9 @@ jobs:
 
       - name: Load Docker image into Minikube
         run: |
-          eval $(minikube docker-env)
-          docker build -t django-app .
+          export SHELL=/bin/bash
+          eval $(minikube -p minikube docker-env)
+          docker buildx build -t django-app .
           minikube image load django-app
 
   deployment:
@@ -56,5 +57,5 @@ jobs:
 
       - name: Test service URLs
         run: |
-          kubectl port-forward service/django-api-srvc 8000:8000 -n default
-          echo "Done------------------------------------------"
+          kubectl get pods
+          kubectl get services
