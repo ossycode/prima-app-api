@@ -5,14 +5,14 @@ on:
     branches: [main]
 
 jobs:
-  build-dockerise-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: "3.9"
@@ -22,16 +22,33 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: dockerise
+  dockerize:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Minikube
         uses: medyagh/setup-minikube@master
+
       - name: Build Docker image
         run: |
-          export SHELL=/bin/bash
           eval $(minikube -p minikube docker-env)
           docker build -t django-app:latest .
           docker images
 
-      - name: Deploy
+  deployment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Minikube
+        uses: medyagh/setup-minikube@master
+
+      - name: Apply Kubernetes manifests
         run: |
           kubectl apply -f infra/k8s/storage.yaml
           kubectl apply -f infra/k8s/deployment.yaml
