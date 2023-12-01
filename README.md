@@ -134,3 +134,24 @@ To delete the Kubernetes resources to free up resources and avoid conflicts:
 - Run the command kubectl delete -f storage.yaml # To delete the storage
 
 # CI/CD Pipeline Setup with GitHub Actions
+
+1. Build Stage
+
+Purpose:
+This stage automatically builds the Python API server codebase.
+
+Execution Flow:
+
+- Uses the `pip install -r requirements.txt` command to install necessary dependencies specified in the `requirements.txt` file.
+
+2. Dockerize Stage
+
+Purpose: This stage creates a Docker image of the API server using the provided Dockerfile.
+
+3. Deployment Stage
+
+Purpose: Demonstrates deployment of the Docker image to a Minikube Kubernetes cluster.
+
+- Configures the Minikube environment within the GitHub Actions workflow.
+
+- Simulates deployment by using Minikube-specific commands or configuration to showcase the deployment process.
